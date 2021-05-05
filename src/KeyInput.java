@@ -55,7 +55,7 @@ public class KeyInput extends KeyAdapter
 		{
 			currentText.delete(0, nextIndex);
 		}
-		else if(!enemyWasKilled)
+		else
 		{
 			currentText.append(key);
 		}

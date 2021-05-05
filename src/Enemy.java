@@ -4,6 +4,7 @@ public class Enemy extends GameObject
 {
 	private String text, typedText;
 	private int speed, damage;
+	private double initialTextTimer, textTimer;
 	private Color textBackground;
 	private Player player;
 	private boolean targeted;
@@ -13,6 +14,8 @@ public class Enemy extends GameObject
 		super(id, x, y, width, height);
 		this.text = text;
 		typedText = "";
+		initialTextTimer = 100;
+		textTimer = initialTextTimer;
 		this.speed = speed;
 		this.damage = damage;
 		this.player = player;
@@ -25,15 +28,17 @@ public class Enemy extends GameObject
 		return text;
 	}
 
-	public void setTargeted(boolean t)
+	public void setTargeted(boolean targeted)
 	{
-		targeted = t;
+		this.targeted = targeted;
 		typedText = targeted ? typedText : ""; // Reset the typed text if needed
+		textTimer = targeted ? textTimer : 0; // Reset the timer if needed
 	}
 
 	public void setTypedText(String typedText)
 	{
 		this.typedText = typedText;
+		textTimer = initialTextTimer;
 	}
 
 	@Override
@@ -46,6 +51,14 @@ public class Enemy extends GameObject
 	public void tick()
 	{
 		int px = player.getX();
+
+		textTimer = Math.max(0, textTimer - 1);
+		if(textTimer == 0)
+		{
+			typedText = "";
+			targeted = false;
+		}
+
 		if(Math.abs(x - px) <= width)
 		{
 			player.dealDamage(damage);
@@ -65,7 +78,11 @@ public class Enemy extends GameObject
 		int w = metrics.stringWidth(text);
 
 		g.setColor(textBackground);
-		g.fillRect(x - w / 2 + width / 2 - 5, y - 20 - 2 * h / 3, w + 10, h);
+		g.fillRoundRect(x - w / 2 + width / 2 - 5, y - 20 - 2 * h / 3, w + 10, h, 30, 30);
+
+		g.setColor(Color.gray);
+		g.fillRoundRect(x - w / 2 + width / 2 - 5, (int) (y - 20 - 2 * h / 3 + h * (1 - textTimer / initialTextTimer)),
+				w + 10, (int) (h - h * (1 - textTimer / initialTextTimer)), 30, 30);
 
 		g.setColor(Color.white);
 		g.drawString(text, x - w / 2 + width / 2, y - 20);
@@ -76,9 +93,9 @@ public class Enemy extends GameObject
 		if(targeted)
 		{
 			g.setColor(Color.white);
-			Graphics2D g2d = (Graphics2D) g;
+			Graphics2D g2d = (Graphics2D) g.create(); // g.create() so we have 2 different objects
 			g2d.setStroke(new BasicStroke(4));
-			g.drawRect(x - w / 2 + width / 2 - 8, y - 20 - 2 * h / 3, w + 16, h);
+			g2d.drawRoundRect(x - w / 2 + width / 2 - 8, y - 20 - 2 * h / 3, w + 16, h, 30, 30);
 		}
 	}
 
@@ -87,5 +104,4 @@ public class Enemy extends GameObject
 	{
 		return -1;
 	}
-
 }
