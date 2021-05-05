@@ -5,7 +5,6 @@ public class Handler
 {
 	private Player player;
 	private CopyOnWriteArrayList<GameObject> list;
-	private String currentText = "";
 
 	public Handler()
 	{
@@ -37,17 +36,12 @@ public class Handler
 		return list;
 	}
 
-	public void setCurrentText(String text)
-	{
-		currentText = text;
-	}
-
 	public void tick()
 	{
 		player.tick();
 		for(GameObject object : list)
 		{
-			if(object.getId() != ID.Player)
+			if(object.getId() != ID.Player) // Update player object on enemies
 			{
 				object.setPlayer(player);
 			}
@@ -63,6 +57,5 @@ public class Handler
 		{
 			object.render(g);
 		}
-		g.drawString(currentText, 20, 100); // TODO: 05/05/2021 DELETE? used for debugging
 	}
 }

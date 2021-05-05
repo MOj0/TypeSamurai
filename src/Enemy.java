@@ -51,7 +51,7 @@ public class Enemy extends GameObject
 			player.dealDamage(damage);
 			return;
 		}
-		x += (x < px) ? 0 : -0; // TODO: 05/05/2021 change to speed
+		x += (x < px) ? speed : -speed;
 	}
 
 	@Override
@@ -81,4 +81,11 @@ public class Enemy extends GameObject
 			g.drawRect(x - w / 2 + width / 2 - 8, y - 20 - 2 * h / 3, w + 16, h);
 		}
 	}
+
+	@Override
+	public int getHealth()
+	{
+		return -1;
+	}
+
 }

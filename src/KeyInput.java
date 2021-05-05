@@ -24,17 +24,20 @@ public class KeyInput extends KeyAdapter
 		boolean enemyWasKilled = false;
 		LinkedList<GameObject> enemiesKilled = new LinkedList<>();
 
+		String checkText = currentText.toString() + key;
+
 		for(GameObject object : handler.getList())
 		{
 			String enemyText = object.getText();
 			object.setTargeted(false);
-			if(enemyText != null && enemyText.charAt(nextIndex) == key)
+
+			if(enemyText != null && enemyText.startsWith(checkText))
 			{
 				enemyWasHit = true;
-				object.setTypedText(currentText.toString() + key);
+				object.setTypedText(checkText);
 				object.setTargeted(true);
 
-				if((currentText.toString() + key).equals(enemyText))
+				if(checkText.equals(enemyText))
 				{
 					enemiesKilled.add(object);
 					enemyWasKilled = true;
@@ -57,6 +60,5 @@ public class KeyInput extends KeyAdapter
 			currentText.append(key);
 		}
 		nextIndex = currentText.length();
-		handler.setCurrentText(currentText.toString());
 	}
 }

@@ -12,7 +12,7 @@ public class Player extends GameObject
 
 	public void dealDamage(int d)
 	{
-		health -= d;
+		health = Math.max(0, health - d);
 	}
 
 
@@ -21,7 +21,7 @@ public class Player extends GameObject
 	{
 		if(health < 1)
 		{
-//			System.err.println("YIKES YOU DIED");
+			System.err.println("YIKES YOU DIED");
 		}
 	}
 
@@ -36,6 +36,12 @@ public class Player extends GameObject
 	public String getText()
 	{
 		return null;
+	}
+
+	@Override
+	public int getHealth()
+	{
+		return health;
 	}
 
 	@Override

@@ -36,4 +36,6 @@ public abstract class GameObject
 	public abstract void setPlayer(Player p);
 
 	public abstract void setTypedText(String typedText);
+
+	public abstract int getHealth();
 }

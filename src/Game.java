@@ -14,8 +14,7 @@ public class Game extends Canvas implements Runnable
 	private int floorY;
 	private int[][] stars;
 	private Spawner spawner;
-
-	// TODO: 04/05/2021 GUI: Add Health, KeyInput: CurrentWordIndicator (targets!)
+	private HUD hud;
 
 	public static void main(String[] args)
 	{
@@ -30,6 +29,7 @@ public class Game extends Canvas implements Runnable
 
 		handler.setPlayer(new Player(ID.Player, WIDTH / 2 - 10, floorY - 60, 20, 60));
 		spawner = new Spawner(handler.getPlayer(), floorY, handler);
+		hud = new HUD(handler.getPlayer().getHealth());
 
 		new Window("Type Samurai", WIDTH, HEIGHT, this);
 		keyboard = new KeyInput(handler);
@@ -77,6 +77,7 @@ public class Game extends Canvas implements Runnable
 	private void tick()
 	{
 		handler.tick();
+		hud.setPlayerHealth(handler.getPlayer().getHealth());
 	}
 
 	private void render()
@@ -102,6 +103,7 @@ public class Game extends Canvas implements Runnable
 		g.setFont(new Font("Yu Gothic Regular", Font.BOLD, 26));
 
 		handler.render(g);
+		hud.render(g);
 
 		g.dispose();
 		bs.show();
