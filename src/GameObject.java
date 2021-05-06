@@ -29,13 +29,12 @@ public abstract class GameObject
 
 	public abstract void render(Graphics g);
 
-	public abstract String getText();
-
 	public abstract void setTargeted(boolean t);
 
 	public abstract void setPlayer(Player p);
 
-	public abstract void setTypedText(String typedText);
-
 	public abstract int getHealth();
+
+	public abstract int checkWasKilled(char c);
+
 }

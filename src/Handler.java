@@ -57,5 +57,7 @@ public class Handler
 		{
 			object.render(g);
 		}
+
+		g.setColor(Color.white);
 	}
 }

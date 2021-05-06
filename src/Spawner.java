@@ -25,20 +25,7 @@ public class Spawner
 		getWordsFromFile("res/words.txt");
 		nWords = words.size();
 
-//		spawnEnemies(3);
-
-//		handler.add(new Enemy(ID.Enemy, random.nextInt(Game.WIDTH), floorY - 60, 20, 60, 1, 1,
-//				"asdr", player));
-//		handler.add(new Enemy(ID.Enemy, random.nextInt(Game.WIDTH), floorY - 60, 20, 60, 1, 1,
-//				"rewq", player));
-
-//		handler.add(new Enemy(ID.Enemy, random.nextInt(Game.WIDTH), floorY - 60, 20, 60, 1, 1,
-//				"asdq", player));
-//		handler.add(new Enemy(ID.Enemy, random.nextInt(Game.WIDTH), floorY - 60, 20, 60, 1, 1,
-//				"asdw", player));
-
-		handler.add(new Enemy(ID.Enemy, 2, floorY - 60, 20, 60, 1, 1,
-				"asdw", player));
+		spawnEnemies(3);
 	}
 
 	private void getWordsFromFile(String fileName)

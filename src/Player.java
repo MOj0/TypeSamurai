@@ -17,6 +17,12 @@ public class Player extends GameObject
 
 
 	@Override
+	public int getHealth()
+	{
+		return health;
+	}
+
+	@Override
 	public void tick()
 	{
 		if(health < 1)
@@ -33,15 +39,9 @@ public class Player extends GameObject
 	}
 
 	@Override
-	public String getText()
+	public int checkWasKilled(char c)
 	{
-		return null;
-	}
-
-	@Override
-	public int getHealth()
-	{
-		return health;
+		return 0;
 	}
 
 	@Override
@@ -49,7 +49,4 @@ public class Player extends GameObject
 
 	@Override
 	public void setPlayer(Player p){}
-
-	@Override
-	public void setTypedText(String typedText){}
 }

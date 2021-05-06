@@ -1,64 +1,43 @@
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class KeyInput extends KeyAdapter
 {
 	private Handler handler;
-	private StringBuffer currentText;
-	private int nextIndex;
 
 	public KeyInput(Handler handler)
 	{
 		this.handler = handler;
-		currentText = new StringBuffer();
-		nextIndex = 0;
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e)
 	{
 		char key = e.getKeyChar();
+		CopyOnWriteArrayList<GameObject> list = handler.getList();
 		boolean enemyWasHit = false;
-		boolean enemyWasKilled = false;
-		LinkedList<GameObject> enemiesKilled = new LinkedList<>();
 
-		String checkText = currentText.toString() + key;
-
-		for(GameObject object : handler.getList())
+		for(int i = list.size() - 1; i >= 0; i--)
 		{
-			String enemyText = object.getText();
-			object.setTargeted(false);
-
-			if(enemyText != null && enemyText.startsWith(checkText))
+			GameObject object = list.get(i);
+			if(object.getId() == ID.Enemy)
 			{
-				enemyWasHit = true;
-				object.setTypedText(checkText);
-				object.setTargeted(true);
-
-				if(checkText.equals(enemyText))
+				int status = object.checkWasKilled(key);
+				if(status == 1)
 				{
-					enemiesKilled.add(object);
-					enemyWasKilled = true;
+					handler.remove(object);
 				}
+				enemyWasHit = status != -1 || enemyWasHit;
 			}
 		}
 
-		Iterator<GameObject> reverseIterator = enemiesKilled.descendingIterator();
-		while(reverseIterator.hasNext())
+		if(!enemyWasHit)
 		{
-			handler.remove(reverseIterator.next());
+			for(GameObject object : list)
+			{
+				object.setTargeted(false);
+			}
 		}
-
-		if(enemyWasKilled || !enemyWasHit)
-		{
-			currentText.delete(0, nextIndex);
-		}
-		else
-		{
-			currentText.append(key);
-		}
-		nextIndex = currentText.length();
 	}
 }
