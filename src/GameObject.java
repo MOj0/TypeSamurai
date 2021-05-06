@@ -15,11 +15,6 @@ public abstract class GameObject
 		this.height = height;
 	}
 
-	public int getX()
-	{
-		return x;
-	}
-
 	public ID getId()
 	{
 		return id;
@@ -33,8 +28,9 @@ public abstract class GameObject
 
 	public abstract void setPlayer(Player p);
 
-	public abstract int getHealth();
-
 	public abstract int checkWasKilled(char c);
 
+	public abstract Rectangle getTextBounds();
+
+	public abstract void moveText(int dir);
 }

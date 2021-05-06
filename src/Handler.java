@@ -36,16 +36,45 @@ public class Handler
 		return list;
 	}
 
+	private void checkTextCollisions(int index)
+	{
+		Rectangle r1 = list.get(index).getTextBounds();
+		if(r1.x == -1)
+		{
+			return;
+		}
+		for(int i = index + 1; i < list.size(); i++)
+		{
+			GameObject object = list.get(i);
+			Rectangle r2 = object.getTextBounds();
+			if(r1.intersects(r2))
+			{
+				list.get(i).moveText(-1);
+			}
+			//TODO!
+//			else
+//			{
+//				Rectangle r3 = new Rectangle(r2.x, r2.y + 42, r2.width, r2.height);
+//				if(!r1.intersects(r3))
+//				{
+//					object.moveText(1);
+//				}
+//			}
+		}
+	}
+
 	public void tick()
 	{
 		player.tick();
-		for(GameObject object : list)
+		for(int i = 0; i < list.size(); i++)
 		{
-			if(object.getId() != ID.Player) // Update player object on enemies
+			GameObject object = list.get(i);
+			if(object.getId() != ID.Player)
 			{
-				object.setPlayer(player);
-			}
+				object.setPlayer(player); // Update player object on enemies
 
+				checkTextCollisions(i);
+			}
 			object.tick();
 		}
 	}

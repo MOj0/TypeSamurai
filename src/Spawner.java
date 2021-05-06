@@ -25,7 +25,7 @@ public class Spawner
 		getWordsFromFile("res/words.txt");
 		nWords = words.size();
 
-		spawnEnemies(3);
+		spawnEnemies(15);
 	}
 
 	private void getWordsFromFile(String fileName)
@@ -37,6 +37,7 @@ public class Spawner
 			{
 				words.add(sc.nextLine());
 			}
+			sc.close();
 		}
 		catch(FileNotFoundException e)
 		{
@@ -50,12 +51,52 @@ public class Spawner
 				words.get(random.nextInt(nWords)), player));
 	}
 
+
 	private void spawnEnemies(int n)
 	{
+		// Contains linked words (banana -> ananas -> slice ...) so player can chain enemies
+		String[] linkedWords = getLinkedWords(n);
+
 		for(int i = 0; i < n; i++)
 		{
 			handler.add(new Enemy(ID.Enemy, random.nextInt(Game.WIDTH), floorY - 60, 20, 60, 1, 1,
-					words.get(random.nextInt(nWords)), player));
+					linkedWords[i], player));
 		}
+	}
+
+	private String[] getLinkedWords(int n)
+	{
+		String[] linkedWords = new String[n];
+		linkedWords[0] = words.get(random.nextInt(nWords));
+
+		for(int i = 1; i < n; i++)
+		{
+			char nextChar = linkedWords[i - 1].charAt(linkedWords[i - 1].length() - 1); // Last char in prev word
+			int startIndex = random.nextInt(nWords); // Used for heuristics
+			for(int j = startIndex; j < nWords && j >= 0; j += (startIndex < nWords / 2) ? 1 : -1)
+			{
+				String word = words.get(j);
+				if(word.charAt(0) == nextChar && !checkWordDuplicate(word, linkedWords)) // Found link and not
+				// duplicate
+				{
+					linkedWords[i] = word;
+					break;
+				}
+			}
+		}
+
+		return linkedWords;
+	}
+
+	private boolean checkWordDuplicate(String word, String[] linkedWords)
+	{
+		for(String linkedWord : linkedWords)
+		{
+			if(word.equals(linkedWord)) // We don't want two same words
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }

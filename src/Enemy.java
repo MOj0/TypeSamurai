@@ -4,7 +4,7 @@ public class Enemy extends GameObject
 {
 	private int speed, damage;
 	private String text;
-	private int currentTextIndex;
+	private int currentTextIndex, textX, textY, textWidth, textHeight;
 	private double initialTextTimer, textTimer;
 	private Color textBackground;
 	private Player player;
@@ -22,6 +22,7 @@ public class Enemy extends GameObject
 		this.player = player;
 		textBackground = new Color(60, 60, 80, 200);
 		targeted = false;
+		textX = textY = textWidth = textHeight = -1;
 	}
 
 	public void setTargeted(boolean targeted)
@@ -35,6 +36,18 @@ public class Enemy extends GameObject
 	public void setPlayer(Player p)
 	{
 		player = p;
+	}
+
+	@Override
+	public Rectangle getTextBounds()
+	{
+		return new Rectangle(textX, textY, textWidth, textHeight);
+	}
+
+	@Override
+	public void moveText(int dir)
+	{
+		textY += dir * textHeight;
 	}
 
 	/**
@@ -70,7 +83,7 @@ public class Enemy extends GameObject
 			targeted = false;
 		}
 
-		if(Math.abs(x - px) <= width)
+		if(Math.abs(x - px) <= width) // Touching the player
 		{
 			player.dealDamage(damage);
 			return;
@@ -85,34 +98,34 @@ public class Enemy extends GameObject
 		g.fillRect(x, y, width, height);
 
 		FontMetrics metrics = g.getFontMetrics(g.getFont());
-		int h = metrics.getHeight();
-		int w = metrics.stringWidth(text);
+		if(textY == -1 && textWidth == -1 && textHeight == -1)
+		{
+			textWidth = metrics.stringWidth(text);
+			textHeight = metrics.getHeight();
+			textY = y - 20;
+		}
+		textX = x - textWidth / 2 + width / 2;
 
 		g.setColor(textBackground);
-		g.fillRoundRect(x - w / 2 + width / 2 - 5, y - 20 - 2 * h / 3, w + 10, h, 30, 30);
+		g.fillRoundRect(textX - 5, textY - 2 * textHeight / 3, textWidth + 10, textHeight, 30, 30);
 
 		g.setColor(Color.gray);
-		g.fillRoundRect(x - w / 2 + width / 2 - 5, (int) (y - 20 - 2 * h / 3 + h * (1 - textTimer / initialTextTimer)),
-				w + 10, (int) (h - h * (1 - textTimer / initialTextTimer)), 30, 30);
+		g.fillRoundRect(textX - 5,
+				(int) (textY - 2 * textHeight / 3 + textHeight * (1 - textTimer / initialTextTimer)),
+				textWidth + 10, (int) (textHeight - textHeight * (1 - textTimer / initialTextTimer)), 30, 30);
 
 		g.setColor(Color.white);
-		g.drawString(text, x - w / 2 + width / 2, y - 20);
+		g.drawString(text, textX, textY);
 
 		g.setColor(Color.red);
-		g.drawString(text.substring(0, currentTextIndex), x - w / 2 + width / 2, y - 20);
+		g.drawString(text.substring(0, currentTextIndex), textX, textY);
 
 		if(targeted)
 		{
 			g.setColor(Color.white);
 			Graphics2D g2d = (Graphics2D) g.create(); // g.create() so we have 2 different objects
 			g2d.setStroke(new BasicStroke(4));
-			g2d.drawRoundRect(x - w / 2 + width / 2 - 8, y - 20 - 2 * h / 3, w + 16, h, 30, 30);
+			g2d.drawRoundRect(textX - 8, textY - 2 * textHeight / 3, textWidth + 16, textHeight, 30, 30);
 		}
-	}
-
-	@Override
-	public int getHealth()
-	{
-		return -1;
 	}
 }

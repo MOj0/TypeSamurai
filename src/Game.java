@@ -16,7 +16,8 @@ public class Game extends Canvas implements Runnable
 	private Spawner spawner;
 	private HUD hud;
 
-	// TODO: 05/05/2021 Add chaining mechanic, score
+	// FIXME: 06/05/2021 Make text fall down when you kill enemies
+	// TODO: 05/05/2021 Add score
 
 	public static void main(String[] args)
 	{
