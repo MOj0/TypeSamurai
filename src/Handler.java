@@ -52,7 +52,6 @@ public class Handler
 			{
 				list.get(i).moveText(-1);
 			}
-			//TODO!
 //			else
 //			{
 //				Rectangle r3 = new Rectangle(r2.x, r2.y + 42, r2.width, r2.height);
