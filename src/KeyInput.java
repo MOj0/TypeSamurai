@@ -24,7 +24,7 @@ public class KeyInput extends KeyAdapter
 			if(object.getId() == ID.Enemy)
 			{
 				int status = object.checkWasKilled(key);
-				if(status == 1)
+				if(status == 1) // Was killed
 				{
 					handler.remove(object);
 				}
@@ -34,7 +34,8 @@ public class KeyInput extends KeyAdapter
 
 		if(!enemyWasHit)
 		{
-			for(GameObject object : list)
+			handler.getPlayer().resetScoreMultiplier();
+			for(GameObject object : list) // If 0 enemies were hit -> player missed, reset all targets
 			{
 				object.setTargeted(false);
 			}

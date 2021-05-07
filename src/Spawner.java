@@ -76,15 +76,13 @@ public class Spawner
 			for(int j = startIndex; j < nWords && j >= 0; j += (startIndex < nWords / 2) ? 1 : -1)
 			{
 				String word = words.get(j);
-				if(word.charAt(0) == nextChar && !checkWordDuplicate(word, linkedWords)) // Found link and not
-				// duplicate
+				if(word.charAt(0) == nextChar && !checkWordDuplicate(word, linkedWords)) // Found link
 				{
 					linkedWords[i] = word;
 					break;
 				}
 			}
 		}
-
 		return linkedWords;
 	}
 

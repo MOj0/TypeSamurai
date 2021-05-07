@@ -7,6 +7,7 @@ public class Enemy extends GameObject
 	private int currentTextIndex, textX, initialTextY, textY, textWidth, textHeight;
 	private boolean textFall;
 	private double initialTextTimer, textTimer;
+	private boolean textTimerReset;
 	private Color textBackground;
 	private Player player;
 	private boolean targeted;
@@ -24,6 +25,7 @@ public class Enemy extends GameObject
 		textBackground = new Color(60, 60, 80, 200);
 		targeted = false;
 		textX = textY = textWidth = textHeight = -1;
+		textTimerReset = false;
 		textFall = true;
 	}
 
@@ -47,12 +49,6 @@ public class Enemy extends GameObject
 	}
 
 	@Override
-	public Rectangle getTextMovedBounds(int dir)
-	{
-		return new Rectangle(textX, textY + textHeight * dir, textWidth, textHeight);
-	}
-
-	@Override
 	public Rectangle getGroundRect()
 	{
 		return new Rectangle(textX, textY + textHeight + 1, textWidth, 1);
@@ -68,12 +64,6 @@ public class Enemy extends GameObject
 	public void moveText(int dir)
 	{
 		textY += dir * textHeight;
-	}
-
-	@Override
-	public void resetTextY()
-	{
-		textY = initialTextY;
 	}
 
 	@Override
@@ -112,8 +102,17 @@ public class Enemy extends GameObject
 		textTimer = Math.max(0, textTimer - 1);
 		if(textTimer == 0)
 		{
+			if(!textTimerReset)
+			{
+				player.resetScoreMultiplier();
+			}
 			currentTextIndex = 0;
 			targeted = false;
+			textTimerReset = true;
+		}
+		else
+		{
+			textTimerReset = false;
 		}
 
 		textY = textFall ? Math.min(initialTextY, textY + 1) : textY;
@@ -133,7 +132,7 @@ public class Enemy extends GameObject
 		g.fillRect(x, y, width, height);
 
 		FontMetrics metrics = g.getFontMetrics(g.getFont());
-		if(textY == -1 && textWidth == -1 && textHeight == -1)
+		if(textY == -1 && textWidth == -1 && textHeight == -1) // If variables weren't set yet
 		{
 			textWidth = metrics.stringWidth(text);
 			textHeight = metrics.getHeight();
@@ -145,14 +144,17 @@ public class Enemy extends GameObject
 		g.setColor(textBackground);
 		g.fillRoundRect(textX - 5, textY - 2 * textHeight / 3, textWidth + 10, textHeight, 30, 30);
 
+		// Timer rectangle -> indicates how much time you have left to strike an enemy
 		g.setColor(Color.gray);
 		g.fillRoundRect(textX - 5,
 				(int) (textY - 2 * textHeight / 3 + textHeight * (1 - textTimer / initialTextTimer)),
 				textWidth + 10, (int) (textHeight - textHeight * (1 - textTimer / initialTextTimer)), 30, 30);
 
+		// Full text
 		g.setColor(Color.white);
 		g.drawString(text, textX, textY);
 
+		// Currently typed text
 		g.setColor(Color.red);
 		g.drawString(text.substring(0, currentTextIndex), textX, textY);
 

@@ -16,8 +16,9 @@ public class Game extends Canvas implements Runnable
 	private Spawner spawner;
 	private HUD hud;
 
-	// FIXME: 06/05/2021 Make text fall down when you kill enemies
-	// TODO: 05/05/2021 Add score
+	// TODO: 05/05/2021 Improve spawner
+	// FIXME: 07/05/2021 Sometimes words are on the top of the screen I DON'T KNOW WHY!!!
+	// FIXME: 07/05/2021 Sometimes it runs out of linked words and throws NullPointerEx. -> improve the chain algo lmao
 
 	public static void main(String[] args)
 	{
@@ -27,7 +28,7 @@ public class Game extends Canvas implements Runnable
 	public Game()
 	{
 		random = new Random();
-		initTerrain();
+		initTerrain(625, 20);
 		handler = new Handler();
 
 		handler.setPlayer(new Player(ID.Player, WIDTH / 2 - 10, floorY - 60, 20, 60));
@@ -112,12 +113,11 @@ public class Game extends Canvas implements Runnable
 		bs.show();
 	}
 
-
-	private void initTerrain()
+	private void initTerrain(int floorY, int nStars)
 	{
 		sky = new Color(10, 10, 45, 255);
-		floorY = 600;
-		stars = new int[20][3];
+		this.floorY = floorY;
+		stars = new int[nStars][3];
 		int starCounter = 0;
 		for(int i = 0; i < 20; i++)
 		{

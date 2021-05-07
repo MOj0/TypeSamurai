@@ -18,6 +18,7 @@ public class Handler
 
 	public void remove(GameObject object)
 	{
+		player.addScore(object);
 		list.remove(object);
 	}
 
@@ -37,38 +38,40 @@ public class Handler
 	}
 
 
-	private void checkTextCollisions(int index)
+	private boolean checkGroundCollision(GameObject object)
+	{
+		Rectangle groundRect = object.getGroundRect();
+		if(groundRect.y > object.getMaxTextY()) // Max y value reached
+		{
+			return false;
+		}
+		for(GameObject object1 : list)
+		{
+			if(groundRect.intersects(object1.getTextBounds())) // There is something below, can't fall further
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private void moveTextObjects(int index)
 	{
 		GameObject object1 = list.get(index);
 		Rectangle r1 = object1.getTextBounds();
-		if(r1.x == -1)
+		if(r1.x == -1) // If text isn't rendered yet
 		{
 			return;
 		}
-		for(int i = index + 1; i < list.size(); i++)
+		for(int i = index + 1; i < list.size(); i++) // Loop through all remaining objects
 		{
 			GameObject object2 = list.get(i);
-			if(r1.intersects(object2.getTextBounds()))
+			if(r1.intersects(object2.getTextBounds())) // If it intersects with another
 			{
-				object2.moveText(-1);
+				object2.moveText(-1); // Move that other one up
 			}
 		}
-
-		Rectangle groundRect = object1.getGroundRect();
-		boolean shouldFall = true;
-		for(int i = 0; i < list.size(); i++)
-		{
-			if(i == index)
-			{
-				continue;
-			}
-			if(groundRect.intersects(list.get(i).getTextBounds()) || groundRect.y > object1.getMaxTextY())
-			{
-				shouldFall = false;
-				break;
-			}
-		}
-		object1.setTextFall(shouldFall);
+		object1.setTextFall(checkGroundCollision(object1));
 	}
 
 
@@ -81,8 +84,7 @@ public class Handler
 			if(object.getId() != ID.Player)
 			{
 				object.setPlayer(player); // Update player object on enemies
-
-				checkTextCollisions(i);
+				moveTextObjects(i); // Moves text objects up, if they intersect -> player always sees all objects
 			}
 			object.tick();
 		}

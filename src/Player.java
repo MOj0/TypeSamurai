@@ -1,9 +1,9 @@
 import java.awt.*;
 
-public class Player // doesnt extend GameObject, not similar enough :(
+public class Player // Doesn't extend GameObject, not similar enough :(
 {
 	private ID id;
-	private int x, y, width, height, health;
+	private int x, y, width, height, health, score, scoreMultiplier;
 
 	public Player(ID id, int x, int y, int width, int height)
 	{
@@ -13,6 +13,8 @@ public class Player // doesnt extend GameObject, not similar enough :(
 		this.width = width;
 		this.height = height;
 		health = 100;
+		score = 0;
+		scoreMultiplier = 1;
 	}
 
 	public int getX()
@@ -30,6 +32,21 @@ public class Player // doesnt extend GameObject, not similar enough :(
 		health = Math.max(0, health - d);
 	}
 
+	public void addScore(GameObject object)
+	{
+		int scoreAmount = 0;
+		if(object.getId() == ID.Enemy)
+		{
+			scoreAmount = 1;
+		}
+		score += scoreAmount * scoreMultiplier;
+		scoreMultiplier *= 2;
+	}
+
+	public void resetScoreMultiplier()
+	{
+		scoreMultiplier = 1;
+	}
 
 	public void tick()
 	{
@@ -43,5 +60,8 @@ public class Player // doesnt extend GameObject, not similar enough :(
 	{
 		g.setColor(Color.white);
 		g.fillRect(x, y, 20, 60);
+
+		g.drawString("Score: " + score, 10, 120);
+		g.drawString("Score multiplier: " + scoreMultiplier, 10, 180);
 	}
 }
