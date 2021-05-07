@@ -39,6 +39,7 @@ public class Handler
 	private void checkTextCollisions(int index)
 	{
 		Rectangle r1 = list.get(index).getTextBounds();
+
 		if(r1.x == -1)
 		{
 			return;
