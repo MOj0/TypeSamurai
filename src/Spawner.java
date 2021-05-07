@@ -1,16 +1,17 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class Spawner
 {
 	private Player player;
 	private Handler handler;
-	private int level;
+	private int level, nEnemies;
 	private ArrayList<String> words;
+	private LinkedList<String> linkedWords;
+	private Iterator<String> linkedIterator;
 	private Random random;
+	private Timer timer;
 	private int nWords, floorY;
 
 	public Spawner(Player player, int floorY, Handler handler)
@@ -18,14 +19,39 @@ public class Spawner
 		this.player = player;
 		this.floorY = floorY;
 		this.handler = handler;
-		level = 1;
 
 		random = new Random();
 		words = new ArrayList<>();
+		linkedWords = new LinkedList<>();
 		getWordsFromFile("res/words.txt");
 		nWords = words.size();
 
-		spawnEnemies(15);
+		level = 0;
+		nextLevel();
+
+		timer = new Timer();
+		TimerTask taskSpawnEnemy = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				if(nEnemies <= 0 && handler.getList().isEmpty())
+				{
+					nextLevel();
+					HUD.displayNextLevel(level);
+					return;
+				}
+				for(int i = 0; i < Math.min(nEnemies, random.nextInt(level + 1)); i++)
+				{
+					if(linkedIterator.hasNext())
+					{
+						spawnEnemy(linkedIterator.next());
+						nEnemies--;
+					}
+				}
+			}
+		};
+		timer.schedule(taskSpawnEnemy, 1, 1500);
 	}
 
 	private void getWordsFromFile(String fileName)
@@ -45,10 +71,10 @@ public class Spawner
 		}
 	}
 
-	private void spawnEnemy()
+	private void spawnEnemy(String word)
 	{
-		handler.add(new Enemy(ID.Enemy, 800, floorY - 60, 20, 60, 1, 1,
-				words.get(random.nextInt(nWords)), player));
+		handler.add(new Enemy(ID.Enemy, random.nextInt(2) == 0 ? 0 : Game.WIDTH, floorY - 60, 20, 60, 1, 1,
+				word, player));
 	}
 
 
@@ -59,9 +85,16 @@ public class Spawner
 
 		for(int i = 0; i < n; i++)
 		{
-			handler.add(new Enemy(ID.Enemy, random.nextInt(Game.WIDTH), floorY - 60, 20, 60, 1, 1,
-					linkedWords[i], player));
+			spawnEnemy(linkedWords[i]);
 		}
+	}
+
+	private void nextLevel()
+	{
+		nEnemies = ++level * 4 + random.nextInt(2 + level);
+		linkedWords.clear();
+		linkedWords.addAll(Arrays.asList(getLinkedWords(nEnemies)));
+		linkedIterator = linkedWords.iterator();
 	}
 
 	private String[] getLinkedWords(int n)
@@ -80,6 +113,15 @@ public class Spawner
 				{
 					linkedWords[i] = word;
 					break;
+				}
+				if(j == nWords - 1 || j == 0) // Link wasn't found, random bullshit, go
+				{
+					String randomWord;
+					do
+					{
+						randomWord = words.get(random.nextInt(nWords));
+						linkedWords[i] = words.get(random.nextInt(nWords));
+					}while(checkWordDuplicate(randomWord, linkedWords));
 				}
 			}
 		}

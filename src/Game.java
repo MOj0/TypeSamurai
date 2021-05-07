@@ -16,9 +16,8 @@ public class Game extends Canvas implements Runnable
 	private Spawner spawner;
 	private HUD hud;
 
-	// TODO: 05/05/2021 Improve spawner
-	// FIXME: 07/05/2021 Sometimes words are on the top of the screen I DON'T KNOW WHY!!!
-	// FIXME: 07/05/2021 Sometimes it runs out of linked words and throws NullPointerEx. -> improve the chain algo lmao
+	// TODO: 07/05/2021 HUD: Make animated text? 
+	// TODO: 07/05/2021 Player movement, assets
 
 	public static void main(String[] args)
 	{

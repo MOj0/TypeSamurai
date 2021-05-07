@@ -25,7 +25,7 @@ public class Enemy extends GameObject
 		textBackground = new Color(60, 60, 80, 200);
 		targeted = false;
 		textX = textY = textWidth = textHeight = -1;
-		textTimerReset = false;
+		textTimerReset = true;
 		textFall = true;
 	}
 
@@ -132,7 +132,7 @@ public class Enemy extends GameObject
 		g.fillRect(x, y, width, height);
 
 		FontMetrics metrics = g.getFontMetrics(g.getFont());
-		if(textY == -1 && textWidth == -1 && textHeight == -1) // If variables weren't set yet
+		if(textY == -1 || textWidth == -1 || textHeight == -1) // If variables weren't set yet
 		{
 			textWidth = metrics.stringWidth(text);
 			textHeight = metrics.getHeight();
