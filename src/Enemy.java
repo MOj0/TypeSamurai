@@ -4,7 +4,8 @@ public class Enemy extends GameObject
 {
 	private int speed, damage;
 	private String text;
-	private int currentTextIndex, textX, textY, textWidth, textHeight;
+	private int currentTextIndex, textX, initialTextY, textY, textWidth, textHeight;
+	private boolean textFall;
 	private double initialTextTimer, textTimer;
 	private Color textBackground;
 	private Player player;
@@ -23,6 +24,7 @@ public class Enemy extends GameObject
 		textBackground = new Color(60, 60, 80, 200);
 		targeted = false;
 		textX = textY = textWidth = textHeight = -1;
+		textFall = true;
 	}
 
 	public void setTargeted(boolean targeted)
@@ -45,10 +47,41 @@ public class Enemy extends GameObject
 	}
 
 	@Override
+	public Rectangle getTextMovedBounds(int dir)
+	{
+		return new Rectangle(textX, textY + textHeight * dir, textWidth, textHeight);
+	}
+
+	@Override
+	public Rectangle getGroundRect()
+	{
+		return new Rectangle(textX, textY + textHeight + 1, textWidth, 1);
+	}
+
+	@Override
+	public int getMaxTextY()
+	{
+		return initialTextY + textHeight;
+	}
+
+	@Override
 	public void moveText(int dir)
 	{
 		textY += dir * textHeight;
 	}
+
+	@Override
+	public void resetTextY()
+	{
+		textY = initialTextY;
+	}
+
+	@Override
+	public void setTextFall(boolean fall)
+	{
+		this.textFall = fall;
+	}
+
 
 	/**
 	 * @param c: character to check
@@ -83,6 +116,8 @@ public class Enemy extends GameObject
 			targeted = false;
 		}
 
+		textY = textFall ? Math.min(initialTextY, textY + 1) : textY;
+
 		if(Math.abs(x - px) <= width) // Touching the player
 		{
 			player.dealDamage(damage);
@@ -102,7 +137,8 @@ public class Enemy extends GameObject
 		{
 			textWidth = metrics.stringWidth(text);
 			textHeight = metrics.getHeight();
-			textY = y - 20;
+			initialTextY = y - 20;
+			textY = initialTextY;
 		}
 		textX = x - textWidth / 2 + width / 2;
 

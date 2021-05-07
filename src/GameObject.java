@@ -32,5 +32,15 @@ public abstract class GameObject
 
 	public abstract Rectangle getTextBounds();
 
+	public abstract Rectangle getTextMovedBounds(int dir);
+
+	public abstract Rectangle getGroundRect();
+
+	public abstract int getMaxTextY();
+
 	public abstract void moveText(int dir);
+
+	public abstract void resetTextY();
+
+	public abstract void setTextFall(boolean fall);
 }
