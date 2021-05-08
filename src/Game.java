@@ -16,8 +16,10 @@ public class Game extends Canvas implements Runnable
 	private Spawner spawner;
 	private HUD hud;
 
-	// TODO: 07/05/2021 HUD: Make animated text? 
-	// TODO: 07/05/2021 Player movement, assets
+	// Debugging
+	private MouseInput mouse;
+
+	// TODO: 07/05/2021 When you kill an enemy, you teleport to it, deal x damage to enemies in y range
 
 	public static void main(String[] args)
 	{
@@ -37,6 +39,10 @@ public class Game extends Canvas implements Runnable
 		new Window("Type Samurai", WIDTH, HEIGHT, this);
 		keyboard = new KeyInput(handler);
 		this.addKeyListener(keyboard);
+
+		// Debugging
+		mouse = new MouseInput();
+		this.addMouseListener(mouse);
 
 		this.setFocusable(true);
 		this.requestFocus();
@@ -80,6 +86,7 @@ public class Game extends Canvas implements Runnable
 	private void tick()
 	{
 		handler.tick();
+		spawner.tick();
 		hud.setPlayerHealth(handler.getPlayer().getHealth());
 	}
 
